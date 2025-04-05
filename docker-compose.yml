@@ -1,30 +1,49 @@
 version: '3.8'
-
 services:
   db:
     image: postgres:15
+    networks:
+      - myapp_network
     restart: always
     environment:
-      POSTGRES_DB: mydb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+    - DB_HOST=db
+    - DB_PORT=5432
+    - DB_NAME=mydb
+    - DB_USER=postgres
+    - DB_PASSWORD=db1234
+    - DATABASE_URL=postgresql://postgres:db1234@db:5432/mydb
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+ 
 
   app:
     build: .
+    networks:
+      - myapp_network
     ports:
       - "3000:3000"
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/mydb
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=mydb
+      - DB_USER=postgres
+      - DB_PASSWORD=db1234
+      - DATABASE_URL=postgresql://postgres:db1234@db:5432/mydb
     volumes:
       - .:/app 
       - /app/node_modules  
     command: npm run start:dev
-
+networks:
+  myapp_network:
+    driver: bridge
 volumes:
   pgdata:

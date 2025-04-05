@@ -84,12 +84,13 @@ export class Wallet {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @OneToMany(() => TradeOrder, tradeOrder => tradeOrder.wallet)
+//   @OneToMany(() => TradeOrder, tradeOrder => tradeOrder.wallet)
   trade_orders: TradeOrder[];
 
-  @OneToMany(() => Transfer, transfer => transfer.sender_wallet)
+//   @OneToMany(() => Transfer, transfer => transfer.sender_wallet)
   sent_transfers: Transfer[];
 
-  @OneToMany(() => Transfer, transfer => transfer.recipient_wallet)
+//   @OneToMany(() => Transfer, transfer => transfer.recipient_wallet)
   received_transfers: Transfer[];
+    balance: number;
 }

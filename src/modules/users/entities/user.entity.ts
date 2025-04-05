@@ -41,7 +41,8 @@ export class User {
   @OneToMany(() => Wallet, wallet => wallet.user)
   wallets: Wallet[];
 
-  @OneToMany(() => TradeOrder, tradeOrder => tradeOrder.user)
+ // @OneToMany(() => TradeOrder, tradeOrder => tradeOrder.user)
   trade_orders: TradeOrder[];
+
 
 }
