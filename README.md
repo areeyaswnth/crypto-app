@@ -17,9 +17,10 @@
 
 ### 1. Clone repo
 ```bash
-git clone https://github.com/areeyaswnth/crypto-app.git
 
-cd your-project
+git clone https://github.com/areeyaswnth/crypto-app.git
+cd crypto-app
+
 ```
 ### 2. Create a .env file
 ```bash
