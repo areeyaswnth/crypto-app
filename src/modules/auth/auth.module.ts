@@ -14,10 +14,8 @@ import { WalletsModule } from '../wallets/wallets.module';
 
 @Module({
   imports: [
-    // Re-export PassportModule
     PassportModule.register({ defaultStrategy: 'jwt' }),
     
-    // Configure JwtModule dynamically
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -30,7 +28,6 @@ import { WalletsModule } from '../wallets/wallets.module';
     }),
     HttpModule,
     forwardRef(() => WalletsModule),
-    // Use forwardRef to resolve circular dependency - make sure this is EXPLICITLY imported
     forwardRef(() => UsersModule),
   ],
   controllers: [AuthController],

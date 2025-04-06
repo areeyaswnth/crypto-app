@@ -1,7 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Wallet } from '../../wallets/entities/wallet.entity';
-import { FiatType } from 'src/common/enum/fiat-type.enum';
 
 export enum OrderType {
   BUY = 'buy',
@@ -60,9 +59,7 @@ export class TradeOrder {
   created_at: Date;
 
   Relationships
-  @ManyToOne(() => User, user => user.trade_orders)
-  @JoinColumn({ name: 'user_id' })
-  user: User;
+
 
   @ManyToOne(() => Wallet, wallet => wallet.trade_orders)
   @JoinColumn({ name: 'wallet_id' })
@@ -70,5 +67,10 @@ export class TradeOrder {
 
   @Column({ default: 'USD' })
   price_currency: string;
+
+  @ManyToOne(() => User, user => user.trade_orders)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
   
 }

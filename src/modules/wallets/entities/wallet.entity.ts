@@ -1,7 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { TradeOrder } from '../../trades/entities/trade-order.entity';
-import { Transfer } from '../../transactions/entities/transfer.entity';
 
 export enum WalletType {
   MAIN = 'main',
@@ -66,19 +65,9 @@ export class Wallet {
     onUpdate: 'CURRENT_TIMESTAMP' 
   })
   updated_at: Date;
-
-  // Relationships
   @ManyToOne(() => User, user => user.wallets)
   @JoinColumn({ name: 'user_id' })
   user: User;
-
-//   @OneToMany(() => TradeOrder, tradeOrder => tradeOrder.wallet)
   trade_orders: TradeOrder[];
 
-//   @OneToMany(() => Transfer, transfer => transfer.sender_wallet)
-  sent_transfers: Transfer[];
-
-//   @OneToMany(() => Transfer, transfer => transfer.recipient_wallet)
-  received_transfers: Transfer[];
-    
 }

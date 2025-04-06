@@ -20,19 +20,15 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
     console.log('Login attempt with email:', email);
-    // Find user by email
     const user = await this.usersService.findByEmail(email) as unknown as User | null;
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // Verify password
-    console.log('Login attempt with email:1', email);
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    // Generate tokens
     const tokens = this.generateTokens(user);
     
     return {
@@ -44,7 +40,6 @@ export class AuthService {
   async register(registerDto: RegisterDto) {
     const { email } = registerDto;
     
-    // Check if user already exists
     const existingUser = await this.usersService.findByEmail(email) as unknown as User | null;
     if (existingUser !== null) {
       throw new ConflictException('Email already exists');
@@ -76,7 +71,6 @@ export class AuthService {
     if(!wallet) {
             throw new ConflictException('Failed to create wallet');
     }
-    // Generate tokens
     const tokens = this.generateTokens(user);
     
     return {
@@ -87,7 +81,6 @@ export class AuthService {
 
   async refreshToken(refreshToken: string) {
     try {
-      // Verify refresh token
       const decoded = this.jwtService.verify(refreshToken) as JwtPayload;
       const user = await this.usersService.findOne(String(decoded.sub)) as User | null;
       
@@ -95,7 +88,6 @@ export class AuthService {
         throw new UnauthorizedException('Invalid token');
       }
       
-      // Generate new tokens
       return this.generateTokens(user);
     } catch (err) {
       throw new UnauthorizedException('Invalid token');
@@ -116,12 +108,11 @@ export class AuthService {
     return {
       accessToken: this.jwtService.sign(payload),
       refreshToken: this.jwtService.sign(payload, {
-        expiresIn: '7d', // Longer expiration for refresh token
+        expiresIn: '7d', 
       }),
     };
   }
 
-  // Remove sensitive information before sending user data
   private sanitizeUser(user: User) {
     const { password, ...result } = user;
     return result;

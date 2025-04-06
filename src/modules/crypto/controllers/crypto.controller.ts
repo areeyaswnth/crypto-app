@@ -3,7 +3,6 @@ import { CreateCryptoDto } from "../dtos/create-crypto.dto";
 import { CryptoService } from "../services/crypto.service";
 import { JwtAuthGuard } from "src/modules/auth/guards/jwt-auth.guard";
 
-// src/crypto/crypto.controller.ts
 @Controller('wallets/:wallet_id/cryptos')
 export class CryptoController {
   constructor(private readonly cryptoService: CryptoService) {}

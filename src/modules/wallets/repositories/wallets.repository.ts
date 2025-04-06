@@ -45,7 +45,6 @@ import {
       private readonly entityManager: EntityManager
     ) {}
   
-    // Create a new wallet
     async create(createWalletDto: CreateWalletDto, user_id?: string): Promise<Wallet> {
       try {
         const wallet = this.walletRepository.create({
@@ -62,9 +61,6 @@ import {
         throw new InternalServerErrorException('Failed to create wallet', error.message);
       }
     }
-
-  
-    // Find wallet by ID
     async findById(id: string,user_id:string): Promise<Wallet|null> {
 
       try {
@@ -117,25 +113,6 @@ import {
       }
     }
   
-    // // Update wallet
-    // async update(id: string, updateWalletDto: UpdateWalletDto): Promise<Wallet> {
-    //   try {
-    //     // Find existing wallet
-    //     const wallet = await this.findById(id, ['user'],updateWalletDto.user_id);
-  
-    //     // Update wallet properties
-    //     const updatedWallet = this.walletRepository.merge(wallet, {
-    //       ...updateWalletDto,
-    //       updated_at: new Date()
-    //     });
-  
-    //     return await this.walletRepository.save(updatedWallet);
-    //   } catch (error) {
-    //     throw new InternalServerErrorException('Failed to update wallet', error.message);
-    //   }
-    // }
-  
-    // Soft delete wallet
     async softDelete(id: string): Promise<void> {
       try {
         const result = await this.walletRepository.softDelete(id);
@@ -154,8 +131,8 @@ import {
    
   }
   function generateRandomBTCAddress(): string {
-    const chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'; // Base58
-    let address = '1'; // Bitcoin address typically starts with '1' or '3'
+    const chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'; 
+    let address = '1'; 
     for (let i = 0; i < 33; i++) {
       address += chars.charAt(Math.floor(Math.random() * chars.length));
     }

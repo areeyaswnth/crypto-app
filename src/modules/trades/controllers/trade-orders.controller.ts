@@ -97,10 +97,7 @@ import {
           userId
         );
   
-        return {
-          message: 'Trade order created successfully',
-          data: tradeOrder
-        };
+        return tradeOrder;
       } catch (error) {
         this.logger.error('Create Trade Order Error', error);
         

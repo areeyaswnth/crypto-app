@@ -37,7 +37,7 @@ export class WalletsController {
             throw new HttpException('Failed to create wallet', HttpStatus.INTERNAL_SERVER_ERROR);
         }
         
-        return { message: `Wallet created for ${createWalletDto.name}`, userId: req.user.user_id };
+        return { wallet:wallet, userId: req.user.user_id };
     }
     
     @Get(':userId')
