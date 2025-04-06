@@ -29,8 +29,7 @@ import { WalletsModule } from '../wallets/wallets.module';
       }),
     }),
     HttpModule,
-    WalletsModule,
-    
+    forwardRef(() => WalletsModule),
     // Use forwardRef to resolve circular dependency - make sure this is EXPLICITLY imported
     forwardRef(() => UsersModule),
   ],

@@ -1,9 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
-import { Observable, map } from 'rxjs';
 import { CreateWalletDto } from '../dtos/create-wallet.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm/repository/Repository';
 import { WalletsRepository } from '../repositories/wallets.repository';
 import { Wallet } from '../entities/wallet.entity';
 
@@ -13,19 +9,30 @@ export class WalletsService {
     constructor(
       private readonly walletsRepository: WalletsRepository,
     ) {}
-  // getWallets(): Observable<Wallet[]> {
-  //   return this.http.get<Wallet[]>(this.apiUrl).pipe(map(response => response.data));
-  // }
 
-  // getWallet(id: string): Observable<Wallet> {
-  //   const url = `${this.apiUrl}/${id}`;
-  //   return this.http.get<Wallet>(url).pipe(map(response => response.data));
-  // }
-
-  async createWallet(dto: CreateWalletDto): Promise<Wallet> {
+  async createDefaultWallet(dto: CreateWalletDto): Promise<Wallet> {
     return await this.walletsRepository.create(dto);
  
   }
+  
+  async createWalletByType(dto: CreateWalletDto): Promise<Wallet> {
+
+    return await this.walletsRepository.create(dto);
+  }
+
+  async getWalletsByUserId(userId: string): Promise<Wallet[]> {
+    if (!userId) {
+      throw new Error('User ID not provided');
+    }
+    return await this.walletsRepository.findByUserId(userId);
+  }
+
+  async getWalletByWalletId(walletId: string,user_id: string): Promise<Wallet|null> {
+    const wallet = await this.walletsRepository.findById(walletId,user_id);
+    return wallet;
+  }
+
+  
 
   // updateWallet(wallet: Wallet): Observable<Wallet> {
   //   const url = `${this.apiUrl}/${wallet.id}`;

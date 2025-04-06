@@ -42,15 +42,11 @@ model User {
 
 model Wallet {
   @@index([user_id])
-  @@index([currency_type])
   @@index([wallet_address])
   wallet_id         String   @id @default(cuid())
   user_id           String
-  currency_type     String
   wallet_address    String
-  available_balance Float
-  locked_balance    Float
-  total_balance     Float
+  wallet_type       String   
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
   is_active         Boolean  @default(true)

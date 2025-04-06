@@ -2,17 +2,13 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColum
 import { User } from '../../users/entities/user.entity';
 import { TradeOrder } from '../../trades/entities/trade-order.entity';
 import { Transfer } from '../../transactions/entities/transfer.entity';
+
 export enum WalletType {
   MAIN = 'main',
-  TRADING = 'trading',
-  SAVINGS = 'savings'
-}
-
-export enum CryptoType {
-  BITCOIN = 'BTC',
-  ETHEREUM = 'ETH',
-  RIPPLE = 'XRP',
-  DOGECOIN = 'DOGE'
+  PERSONAL = 'personal',
+  BUSINESS = 'business',
+  SAVINGS = 'savings',
+  INVESTMENT = 'investment'
 }
 
 @Entity('wallets')
@@ -30,11 +26,6 @@ export class Wallet {
   })
   wallet_type: WalletType;
 
-  @Column({
-    type: 'enum',
-    enum: CryptoType
-  })
-  crypto_type: CryptoType;
 
   @Column({ 
     type: 'varchar', 

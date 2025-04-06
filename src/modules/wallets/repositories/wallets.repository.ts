@@ -18,6 +18,23 @@ import {
   
   @Injectable()
   export class WalletsRepository {
+    async findByUserId(user_id: string): Promise<Wallet[]> {
+      return this.walletRepository.find({
+        where: { user_id: user_id } as FindOptionsWhere<Wallet>,
+        order: { created_at: 'DESC' },
+        relations: ['user'],
+      });
+    }
+    async findByType(user_id: string, wallet_type: string): Promise<Wallet | null> {
+      const wallet = await this.walletRepository.findOne({
+        where: { user_id: user_id, wallet_type:wallet_type } as FindOptionsWhere<Wallet>,
+        order: { created_at: 'DESC' },
+        relations: ['user'],
+      });
+    
+      return wallet; 
+    }
+    
     async save(wallet: Promise<Wallet>): Promise<Wallet>{
       return wallet;
     }
@@ -28,17 +45,15 @@ import {
     ) {}
   
     // Create a new wallet
-    async create(createWalletDto: CreateWalletDto, userId?: string): Promise<Wallet> {
+    async create(createWalletDto: CreateWalletDto, user_id?: string): Promise<Wallet> {
       try {
         const wallet = this.walletRepository.create({
           ...createWalletDto,
-          user_id: userId || createWalletDto.userId, // Ensure user_id exists in Wallet entity
-          balance: createWalletDto.initialBalance || 0,
+          user_id: user_id || createWalletDto.user_id,
           created_at: new Date(),
           updated_at: new Date(),
-          crypto_type: createWalletDto.crypto_type || 'BTC', // Default to BTC if not provided
-          wallet_address: createWalletDto.wallet_address|| generateRandomBTCAddress(),
-        });
+          wallet_address: createWalletDto.wallet_address || generateRandomBTCAddress(),
+        } as DeepPartial<Wallet>);
   
         const savedWallet = await this.walletRepository.save(wallet);
         return Array.isArray(savedWallet) ? savedWallet[0] : savedWallet;
@@ -49,16 +64,17 @@ import {
 
   
     // Find wallet by ID
-    async findById(id: string, relations: string[] = []): Promise<Wallet> {
+    async findById(id: string,user_id:string): Promise<Wallet|null> {
+      console.log('Finding wallet by ID:', id);
+      console.log('Finding wallet by user ID:', user_id);
       try {
         const wallet = await this.walletRepository.findOne({
-          where: { id } as any,
-          relations,
+          where: [
+            { wallet_id: id, user_id: user_id },
+          ]
         });
   
-        if (!wallet) {
-          throw new NotFoundException(`Wallet with ID ${id} not found`);
-        }
+      
   
         return wallet;
       } catch (error) {
@@ -102,23 +118,23 @@ import {
       }
     }
   
-    // Update wallet
-    async update(id: string, updateWalletDto: UpdateWalletDto): Promise<Wallet> {
-      try {
-        // Find existing wallet
-        const wallet = await this.findById(id);
+    // // Update wallet
+    // async update(id: string, updateWalletDto: UpdateWalletDto): Promise<Wallet> {
+    //   try {
+    //     // Find existing wallet
+    //     const wallet = await this.findById(id, ['user'],updateWalletDto.user_id);
   
-        // Update wallet properties
-        const updatedWallet = this.walletRepository.merge(wallet, {
-          ...updateWalletDto,
-          updated_at: new Date()
-        });
+    //     // Update wallet properties
+    //     const updatedWallet = this.walletRepository.merge(wallet, {
+    //       ...updateWalletDto,
+    //       updated_at: new Date()
+    //     });
   
-        return await this.walletRepository.save(updatedWallet);
-      } catch (error) {
-        throw new InternalServerErrorException('Failed to update wallet', error.message);
-      }
-    }
+    //     return await this.walletRepository.save(updatedWallet);
+    //   } catch (error) {
+    //     throw new InternalServerErrorException('Failed to update wallet', error.message);
+    //   }
+    // }
   
     // Soft delete wallet
     async softDelete(id: string): Promise<void> {
@@ -135,70 +151,8 @@ import {
         throw new InternalServerErrorException('Failed to delete wallet', error.message);
       }
     }
-  
-    // Update wallet balance
-    async updateBalance(
-      id: string, 
-      amount: number, 
-      transaction: EntityManager = this.entityManager
-    ): Promise<Wallet> {
-      try {
-        return await transaction.transaction(async transactionalEntityManager => {
-          // Find wallet with a lock to prevent race conditions
-          const wallet = await transactionalEntityManager.findOne(Wallet, {
-            where: { id } as any,
-            lock: { mode: 'pessimistic_write' }
-          });
-  
-          if (!wallet) {
-            throw new NotFoundException(`Wallet with ID ${id} not found`);
-          }
-  
-          // Update balance
-          wallet.balance += amount;
-          wallet.updated_at = new Date();
-  
-          return await transactionalEntityManager.save(wallet);
-        });
-      } catch (error) {
-        throw new InternalServerErrorException('Failed to update wallet balance', error.message);
-      }
-    }
-  
-    // Check if wallet belongs to user
-    async validateWalletOwnership(walletId: string, userId: string): Promise<boolean> {
-      try {
-        const wallet = await this.walletRepository.findOne({
-          where: { id: walletId, userId: userId } as any
-        });
-  
-        return !!wallet;
-      } catch (error) {
-        throw new InternalServerErrorException('Error validating wallet ownership', error.message);
-      }
-    }
-  
-    // Batch create wallets
-    async createMany(
-      createWalletDtos: CreateWalletDto[], 
-      userId?: string
-    ): Promise<Wallet[]> {
-      try {
-        const walletsToCreate = createWalletDtos.map(dto => 
-          this.walletRepository.create({
-            ...dto,
-            user_id: userId || dto.userId,
-            balance: dto.initialBalance || 0,
-            created_at: new Date(),
-            updated_at: new Date()
-          })
-        );
-  
-        return await this.walletRepository.save(walletsToCreate);
-      } catch (error) {
-        throw new InternalServerErrorException('Failed to create multiple wallets', error.message);
-      }
-    }
+    
+   
   }
   function generateRandomBTCAddress(): string {
     const chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'; // Base58

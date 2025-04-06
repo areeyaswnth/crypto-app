@@ -8,7 +8,6 @@ import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { User } from 'src/modules/users/entities/user.entity';
 import { CreateWalletDto, WalletType } from 'src/modules/wallets/dtos/create-wallet.dto';
 import { WalletsService } from 'src/modules/wallets/services/wallets.service';
-import { CryptoType } from 'src/modules/wallets/entities/wallet.entity';
 
 @Injectable()
 export class AuthService {
@@ -65,18 +64,15 @@ export class AuthService {
     if (!user) {
       throw new ConflictException('Failed to create user');
     }
-    
     const walletData : CreateWalletDto = {
             name: 'Main Wallet',
-            initialBalance: 0,
-            type: WalletType.PERSONAL,
+            wallet_type: WalletType.MAIN,
             description: "Main wallet for user",
-            userId: user.user_id,
-            crypto_type: CryptoType.BITCOIN,
+            user_id: user.user_id,
             wallet_address: generateRandomBTCAddress(),
     }
     
-    const wallet = await this.walletService.createWallet(walletData);
+    const wallet = await this.walletService.createDefaultWallet(walletData);
     if(!wallet) {
             throw new ConflictException('Failed to create wallet');
     }

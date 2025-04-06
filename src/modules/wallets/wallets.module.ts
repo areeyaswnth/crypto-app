@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { WalletsController } from './controllers/wallets.controller';
@@ -6,13 +6,14 @@ import { WalletsService } from './services/wallets.service';
 import { WalletsRepository } from './repositories/wallets.repository';
 import { Wallet } from './entities/wallet.entity';
 import { HttpModule } from '@nestjs/axios';
-// import { AuthModule } from '../auth/auth.module'; // เพิ่ม auth module
+import { AuthModule } from '../auth/auth.module'; // เพิ่ม auth module
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Wallet]),
     HttpModule,
-
+    forwardRef(() => AuthModule), // Use forwardRef to resolve circular dependency
   ],
   controllers: [WalletsController],
   providers: [
