@@ -1,4 +1,3 @@
-// src/database/connection-debug.ts
 import { Client } from 'pg';
 
 async function testDatabaseConnection() {
