@@ -1,19 +1,13 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Wallet } from '../../wallets/entities/wallet.entity';
 import { User } from '../../users/entities/user.entity';
+import { CryptoType } from 'src/common/enum/crypto-type.enum';
 
 export enum TransferStatus {
   PENDING = 'pending',
   COMPLETED = 'completed',
   FAILED = 'failed',
   CANCELLED = 'cancelled'
-}
-
-export enum CryptoType {
-  BITCOIN = 'BTC',
-  ETHEREUM = 'ETH',
-  RIPPLE = 'XRP',
-  DOGECOIN = 'DOGE'
 }
 
 @Entity('transfers')

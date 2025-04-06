@@ -18,6 +18,7 @@ import {
   
   @Injectable()
   export class WalletsRepository {
+
     async findByUserId(user_id: string): Promise<Wallet[]> {
       return this.walletRepository.find({
         where: { user_id: user_id } as FindOptionsWhere<Wallet>,
@@ -65,8 +66,7 @@ import {
   
     // Find wallet by ID
     async findById(id: string,user_id:string): Promise<Wallet|null> {
-      console.log('Finding wallet by ID:', id);
-      console.log('Finding wallet by user ID:', user_id);
+
       try {
         const wallet = await this.walletRepository.findOne({
           where: [
@@ -85,7 +85,6 @@ import {
       }
     }
   
-    // Find wallets with pagination and filtering
     async findAll(options: {
       page?: number;
       limit?: number;
