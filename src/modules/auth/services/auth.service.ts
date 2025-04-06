@@ -6,12 +6,16 @@ import { LoginDto } from '../dtos/login.dto'; // Using your current import path
 import { RegisterDto } from '../dtos/register.dto'; // Using your current import path
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { User } from 'src/modules/users/entities/user.entity';
+import { CreateWalletDto, WalletType } from 'src/modules/wallets/dtos/create-wallet.dto';
+import { WalletsService } from 'src/modules/wallets/services/wallets.service';
+import { CryptoType } from 'src/modules/wallets/entities/wallet.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly walletService: WalletsService
   ) {}
 
   async login(loginDto: LoginDto) {
@@ -47,9 +51,35 @@ export class AuthService {
       throw new ConflictException('Email already exists');
     }
 
-    // Create new user
-    const user = await this.usersService.create(registerDto) as unknown as User;
+    const createUserDto = {
+      ...registerDto,
+      first_name: registerDto.first_name,
+      last_name: registerDto.last_name,
+      phone: registerDto.phone,
+      date_of_birth: registerDto.date_of_birth,
+      password: registerDto.password,
+
+    };
+
+    const user = await this.usersService.createUser(createUserDto);
+    if (!user) {
+      throw new ConflictException('Failed to create user');
+    }
     
+    const walletData : CreateWalletDto = {
+            name: 'Main Wallet',
+            initialBalance: 0,
+            type: WalletType.PERSONAL,
+            description: "Main wallet for user",
+            userId: user.user_id,
+            crypto_type: CryptoType.BITCOIN,
+            wallet_address: generateRandomBTCAddress(),
+    }
+    
+    const wallet = await this.walletService.createWallet(walletData);
+    if(!wallet) {
+            throw new ConflictException('Failed to create wallet');
+    }
     // Generate tokens
     const tokens = this.generateTokens(user);
     
@@ -100,4 +130,13 @@ export class AuthService {
     const { password, ...result } = user;
     return result;
   }
+}
+
+function generateRandomBTCAddress(): string {
+  const chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'; // Base58
+  let address = '1'; // Bitcoin address typically starts with '1' or '3'
+  for (let i = 0; i < 33; i++) {
+    address += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return address;
 }

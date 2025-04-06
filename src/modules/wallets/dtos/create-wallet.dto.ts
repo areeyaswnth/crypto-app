@@ -1,5 +1,7 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString, Min, MaxLength, IsEnum } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { WalletsService } from '../services/wallets.service';
+import { CryptoType } from '../entities/wallet.entity';
 
 // Enum for wallet types
 export enum WalletType {
@@ -19,6 +21,28 @@ export class CreateWalletDto {
   @IsNotEmpty()
   @MaxLength(100)
   name: string;
+
+
+  @ApiProperty({
+      description: 'Type of cryptocurrency',
+      example: 'BTC',
+      enum: CryptoType,
+    })
+
+  @IsEnum(CryptoType)
+  @IsNotEmpty()
+  @MaxLength(3)
+  crypto_type: CryptoType;
+
+
+  @ApiProperty({
+    description: 'Unique address of the wallet',
+    example: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa'
+  })
+  wallet_address: string;
+  available_balance?: number=0;
+  locked_balance?: number=0;
+  total_balance?: number=0;
 
   @ApiPropertyOptional({
     description: 'Initial balance of the wallet',
@@ -55,16 +79,4 @@ export class CreateWalletDto {
   @IsString()
   @IsOptional()
   userId?: string;
-}
-
-// Example of how to use the DTO in a service or controller
-export class WalletService {
-  createWallet(createWalletDto: CreateWalletDto) {
-    // Validation will be handled by class-validator
-    // Implement wallet creation logic
-    return {
-      id: 'generated-uuid',
-      ...createWalletDto
-    };
-  }
 }

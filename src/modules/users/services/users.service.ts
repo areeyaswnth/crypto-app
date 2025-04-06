@@ -7,10 +7,10 @@ import { RegisterDto } from 'src/modules/auth/dtos/register.dto';
 
 @Injectable()
 export class UsersService {
-  create(registerDto: RegisterDto) {
+  async create(registerDto: RegisterDto) {
       return this.usersRepository.create(registerDto);
   }
-  findByEmail(email: string) {
+  async findByEmail(email: string) {
     return this.usersRepository.findByEmail(email);
   }
   async findOne(id: string) {
@@ -32,7 +32,6 @@ export class UsersService {
       throw new ConflictException('User with this email already exists');
     }
 
-    // Create new user
     return this.usersRepository.createUser(createUserDto);
   }
 
@@ -43,7 +42,6 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    // Compare passwords
     const isPasswordValid = await bcrypt.compare(password, user.password);
     
     if (!isPasswordValid) {
@@ -52,7 +50,6 @@ export class UsersService {
 
     return user;
   }
-
   async getUserProfile(user_id: string): Promise<User> {
     const user = await this.usersRepository.findById(user_id);
     

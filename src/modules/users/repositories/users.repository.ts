@@ -8,7 +8,7 @@ import { RegisterDto } from 'src/modules/auth/dtos/register.dto';
 
 @Injectable()
 export class UsersRepository {
-  create(registerDto: RegisterDto) {
+  async create(registerDto: RegisterDto) {
     return this.usersRepository.create(registerDto);
   }
   constructor(
@@ -19,7 +19,6 @@ export class UsersRepository {
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const { password, ...userData } = createUserDto;
     
-    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 

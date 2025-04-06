@@ -16,6 +16,12 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
+    @Post('register')
+    @UsePipes(new ValidationPipe({ transform: true }))
+    async createUser(@Body() createUserDto: CreateUserDto) {
+        return this.usersService.createUser(createUserDto);
+    }
+
     @Get('profile')
     @UseGuards(JwtAuthGuard)
     async getUserProfile(@Request() req) {

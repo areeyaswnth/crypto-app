@@ -8,6 +8,9 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { UsersModule } from '../users/users.module';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
+import { WalletsService } from '../wallets/services/wallets.service';
+import { HttpModule } from '@nestjs/axios';
+import { WalletsModule } from '../wallets/wallets.module';
 
 @Module({
   imports: [
@@ -25,6 +28,8 @@ import { RolesGuard } from './guards/roles.guard';
         },
       }),
     }),
+    HttpModule,
+    WalletsModule,
     
     // Use forwardRef to resolve circular dependency - make sure this is EXPLICITLY imported
     forwardRef(() => UsersModule),
@@ -35,6 +40,7 @@ import { RolesGuard } from './guards/roles.guard';
     JwtStrategy,
     JwtAuthGuard,
     RolesGuard,
+   
   ],
   exports: [
     PassportModule,

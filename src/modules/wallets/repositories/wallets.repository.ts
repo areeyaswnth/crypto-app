@@ -18,6 +18,9 @@ import {
   
   @Injectable()
   export class WalletsRepository {
+    async save(wallet: Promise<Wallet>): Promise<Wallet>{
+      return wallet;
+    }
     constructor(
       @InjectRepository(Wallet)
       private readonly walletRepository: Repository<Wallet>,
@@ -29,10 +32,12 @@ import {
       try {
         const wallet = this.walletRepository.create({
           ...createWalletDto,
-          user_id: userId || createWalletDto.userId,
+          user_id: userId || createWalletDto.userId, // Ensure user_id exists in Wallet entity
           balance: createWalletDto.initialBalance || 0,
           created_at: new Date(),
-          updated_at: new Date()
+          updated_at: new Date(),
+          crypto_type: createWalletDto.crypto_type || 'BTC', // Default to BTC if not provided
+          wallet_address: createWalletDto.wallet_address|| generateRandomBTCAddress(),
         });
   
         const savedWallet = await this.walletRepository.save(wallet);
@@ -41,6 +46,7 @@ import {
         throw new InternalServerErrorException('Failed to create wallet', error.message);
       }
     }
+
   
     // Find wallet by ID
     async findById(id: string, relations: string[] = []): Promise<Wallet> {
@@ -194,3 +200,12 @@ import {
       }
     }
   }
+  function generateRandomBTCAddress(): string {
+    const chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'; // Base58
+    let address = '1'; // Bitcoin address typically starts with '1' or '3'
+    for (let i = 0; i < 33; i++) {
+      address += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return address;
+  }
+  
