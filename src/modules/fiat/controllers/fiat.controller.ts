@@ -67,6 +67,7 @@ export class FiatController {
   }
 
   @Post(':currency/withdraw')
+  @UseGuards(JwtAuthGuard)
   async withdraw(
     @Param('wallet_id') wallet_id: string,
     @Param('currency') currency: string,
