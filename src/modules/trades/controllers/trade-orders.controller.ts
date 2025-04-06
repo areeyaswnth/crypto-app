@@ -3,7 +3,6 @@ import {
     Post, 
     Body, 
     Param, 
-    Delete, 
     UseGuards, 
     Request, 
     HttpException,
@@ -21,8 +20,8 @@ import {
     private readonly logger = new Logger(TradeOrdersController.name);
   
     constructor(private readonly tradeOrdersService: TradeOrdersService) {}
+    
     @Get(':userId')
-    @UseGuards(JwtAuthGuard)
     async getTradeOrders(
         @Param('userId') userId: string,
         @Request() req
@@ -45,9 +44,9 @@ import {
             error.status || HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
-        }
-    @Get(':userId/:orderId')
-    @UseGuards(JwtAuthGuard)
+    }
+    
+    @Get(':userId/:orderId') 
     async getTradeOrderById(
       @Param('userId') userId: string,
       @Param('orderId') orderId: string,
@@ -72,8 +71,8 @@ import {
         );
       }
     }
+    
     @Post()
-    @UseGuards(JwtAuthGuard)
     async createTradeOrder(
       @Body() createTradeOrderDto: CreateTradeOrderDto,
       @Request() req
@@ -111,6 +110,4 @@ import {
         );
       }
     }
-  
-   
   }

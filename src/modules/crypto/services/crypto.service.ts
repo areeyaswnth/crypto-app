@@ -9,6 +9,9 @@ import { CryptoEntity,  } from '../entities/crypto.entity';
 import { CryptoType } from 'src/common/enum/crypto-type.enum';
 @Injectable()
 export class CryptoService {
+  findByWalletAndCurrency(wallet_id: string, crypto_type: CryptoType) {
+      return this.cryptoRepository.findByWalletAndCurrency(wallet_id, crypto_type);
+  }
   constructor(
     private cryptoRepository: CryptoRepository,
     private walletRepository: WalletsRepository 

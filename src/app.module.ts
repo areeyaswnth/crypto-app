@@ -46,7 +46,7 @@ import { TradesModule } from './modules/trades/trades.module';
     CryptoModule,
     FiatModule,
     CryptoModule,
-    TradesModule
+    TradesModule,
     // TransactionsModule,
     // TradesModule,
     // ExchangesModule

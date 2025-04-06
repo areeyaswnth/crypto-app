@@ -70,6 +70,7 @@ model TradeOrder {
   total_value Float
   status      String   @default("pending") // pending, executed, cancelled
   order_date  DateTime @default(now())
+  price_currency String // USD, EUR, etc.
 
   user   User   @relation(fields: [user_id], references: [user_id])
   wallet Wallet @relation(fields: [wallet_id], references: [wallet_id])

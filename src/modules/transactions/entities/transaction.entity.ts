@@ -1,7 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Wallet } from '../../wallets/entities/wallet.entity';
-import { Exchange } from '../../exchanges/entities/exchange.entity';
 export enum TransactionType {
   DEPOSIT = 'deposit',
   WITHDRAWAL = 'withdrawal',
@@ -82,12 +81,5 @@ export class Transaction {
   // Optional Exchange Details
   @Column({ nullable: true })
   exchange_id?: string;
-
-  // Relationships
-  
-  
-
-  @ManyToOne(() => Exchange, exchange => exchange.transactions, { nullable: true })
-  @JoinColumn({ name: 'exchange_id' })
-  exchange?: Exchange;
+;
 }
