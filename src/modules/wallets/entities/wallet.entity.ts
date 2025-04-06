@@ -39,7 +39,6 @@ export class Wallet {
     scale: 8, 
     default: 0 
   })
-  available_balance: number;
 
   @Column({ 
     type: 'decimal', 
@@ -47,7 +46,6 @@ export class Wallet {
     scale: 8, 
     default: 0 
   })
-  locked_balance: number;
 
   @Column({ 
     type: 'decimal', 
@@ -55,7 +53,6 @@ export class Wallet {
     scale: 8, 
     default: 0 
   })
-  total_balance: number;
 
   @Column({ default: true })
   is_active: boolean;
@@ -83,5 +80,5 @@ export class Wallet {
 
 //   @OneToMany(() => Transfer, transfer => transfer.recipient_wallet)
   received_transfers: Transfer[];
-    balance: number;
+    
 }

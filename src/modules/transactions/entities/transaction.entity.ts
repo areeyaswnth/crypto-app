@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
-import { Wallet } from '../../wallets/entities/wallet.entity';
+import { CryptoType } from 'src/common/enum/crypto-type.enum';
 export enum TransactionType {
   DEPOSIT = 'deposit',
   WITHDRAWAL = 'withdrawal',
@@ -14,13 +13,6 @@ export enum TransactionStatus {
   COMPLETED = 'completed',
   FAILED = 'failed',
   CANCELLED = 'cancelled'
-}
-
-export enum CryptoType {
-  BITCOIN = 'BTC',
-  ETHEREUM = 'ETH',
-  RIPPLE = 'XRP',
-  DOGECOIN = 'DOGE'
 }
 
 @Entity('transactions')
@@ -44,7 +36,7 @@ export class Transaction {
     type: 'enum',
     enum: CryptoType
   })
-  currency_type: CryptoType;
+  crypto_type: CryptoType;
 
   @Column('decimal', { 
     precision: 20, 
@@ -52,12 +44,6 @@ export class Transaction {
   })
   amount: number;
 
-  @Column('decimal', { 
-    precision: 20, 
-    scale: 8, 
-    default: 0 
-  })
-  fee: number;
 
   @Column({
     type: 'enum',
@@ -78,8 +64,6 @@ export class Transaction {
   @Column({ nullable: true })
   description?: string;
 
-  // Optional Exchange Details
-  @Column({ nullable: true })
-  exchange_id?: string;
+
 ;
 }
