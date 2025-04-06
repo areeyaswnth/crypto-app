@@ -4,7 +4,6 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,7 +14,162 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  @@index([email])
+  user_id       String    @id @default(cuid())
+  first_name    String
+  last_name     String
+  email         String    @unique
+  password      String
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  phone         String?
+  address       String?
+  city          String?
+  state         String?
+  country       String?
+  zip_code      String?
+  date_of_birth String
+  is_verified   Boolean   @default(false)
+  last_login    DateTime?
+
+  Wallet Wallet[]
+
+  TradeOrder TradeOrder[]
+
+  Transaction Transaction[]
+
+}
+
+model Wallet {
+  @@index([user_id])
+  @@index([currency_type])
+  @@index([wallet_address])
+  wallet_id         String   @id @default(cuid())
+  user_id           String
+  currency_type     String
+  wallet_address    String
+  available_balance Float
+  locked_balance    Float
+  total_balance     Float
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  is_active         Boolean  @default(true)
+  user               User         @relation(fields: [user_id], references: [user_id])
+  trade_orders       TradeOrder[]
+  sent_transfers     Transfer[]   @relation("SenderTransfers")
+  received_transfers Transfer[]   @relation("RecipientTransfers")
+  Transaction Transaction[]
+}
+
+model TradeOrder {
+  @@index([user_id])
+  @@index([wallet_id])
+  id          String   @id @default(cuid())
+  user_id     String
+  wallet_id   String
+  crypto_type String // BTC, ETH, XRP, DOGE
+  order_type  String // buy, sell, limit, market
+  amount      Float
+  price       Float
+  total_value Float
+  status      String   @default("pending") // pending, executed, cancelled
+  order_date  DateTime @default(now())
+
+  user   User   @relation(fields: [user_id], references: [user_id])
+  wallet Wallet @relation(fields: [wallet_id], references: [wallet_id])
+}
+
+model Transfer {
+  @@index([sender_wallet_id])
+  @@index([recipient_wallet_id])
+  id                  String   @id @default(cuid())
+  sender_wallet_id    String
+  recipient_wallet_id String
+  crypto_type         String
+  amount              Float
+  fee                 Float    @default(0)
+  transfer_date       DateTime @default(now())
+  status              String   @default("pending")
+  transaction_hash    String?
+  sender_wallet       Wallet   @relation("SenderTransfers", fields: [sender_wallet_id], references: [wallet_id])
+  recipient_wallet    Wallet   @relation("RecipientTransfers", fields: [recipient_wallet_id], references: [wallet_id])
+}
+
+model Exchange {
+  @@index([exchange_name])
+  @@index([crypto_pair])
+  exchange_id          String   @id @default(cuid())
+  exchange_name        String
+  crypto_pair          String // แก้ไข typo จาก cryto_pair
+  exchange_rate        Float
+  transaction_fee      Float
+  created_at           DateTime @default(now())
+  updated_at           DateTime @updatedAt
+  status               String   @default("active")
+  supported_currencies String[]
+
+  transactions Transaction[]
+}
+
+model Transaction {
+  transaction_id      String   @id @default(cuid())
+  user_id             String
+  amount              Float
+  recipient_id        String
+  currency_type       String
+  transaction_date    DateTime @default(now())
+  transaction_type    String // deposit, withdrawal, transfer, trade
+  sender_wallet_id    String
+  exchange_details_id String?
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  status              String // pending, completed, failed
+
+  user          User      @relation(fields: [user_id], references: [user_id])
+  sender_wallet Wallet    @relation(fields: [sender_wallet_id], references: [wallet_id])
+  exchange      Exchange? @relation(fields: [exchange_details_id], references: [exchange_id])
+
+  @@index([user_id])
+  @@index([transaction_date])
+  @@index([transaction_type])
+}
+
+model CryptoPriceHistory {
+  id          String   @id @default(cuid())
+  crypto_type String // BTC, ETH, XRP, DOGE
+  date        DateTime
+  open_price  Float
+  close_price Float
+  high_price  Float
+  low_price   Float
+  volume      Float
+
+  @@unique([crypto_type, date])
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  TRADER
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER
+  TRADE
+}
+
+enum OrderType {
+  BUY
+  SELL
+  LIMIT
+  MARKET
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
 }
