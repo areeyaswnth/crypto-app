@@ -1,0 +1,6 @@
+import { IsNotEmpty, IsEnum, IsPositive, IsOptional, IsString, IsNumber } from 'class-validator';
+import { TransactionStatus } from '../entities/transaction.entity';
+
+export class UpdateTransactionStatusDto {
+  status: TransactionStatus;
+}

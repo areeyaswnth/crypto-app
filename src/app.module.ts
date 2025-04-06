@@ -10,7 +10,7 @@ import { CryptoModule } from './modules/crypto/crypto.module';
 import { FiatModule } from './modules/fiat/fiat.module';
 import { TradesModule } from './modules/trades/trades.module';
 //import { WalletsModule } from './modules/wallets/wallets.module';
-//import { TransactionsModule } from './modules/transactions/transactions.module';
+import { TransactionsModule } from './modules/transactions/transactions.module';
 //import { TradesModule } from './modules/trades/trades.module';
 //import { ExchangesModule } from './modules/exchanges/exchanges.module';
 
@@ -47,7 +47,7 @@ import { TradesModule } from './modules/trades/trades.module';
     FiatModule,
     CryptoModule,
     TradesModule,
-    // TransactionsModule,
+    TransactionsModule,
     // TradesModule,
     // ExchangesModule
   ],

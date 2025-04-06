@@ -18,13 +18,6 @@ import {
   
   @Injectable()
   export class WalletsRepository {
-    deductBalance(wallet_id: string, total_value: number) {
-      return this.walletRepository.createQueryBuilder()
-        .update(Wallet)
-        .set({ balance: () => `balance - ${total_value}` })
-        .where('wallet_id = :wallet_id', { wallet_id })
-        .execute();
-    }
 
     async findByUserId(user_id: string): Promise<Wallet[]> {
       return this.walletRepository.find({
