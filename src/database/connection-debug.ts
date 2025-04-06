@@ -3,18 +3,14 @@ import { Client } from 'pg';
 
 async function testDatabaseConnection() {
   // Log environment variables for debugging
-  console.log('Connection Environment Variables:');
-  console.log('DB_HOST:', process.env.DB_HOST);
-  console.log('DB_PORT:', process.env.DB_PORT);
-  console.log('DB_USER:', process.env.DB_USER);
-  console.log('DB_NAME:', process.env.DB_NAME);
+
 
   const connectionConfig = {
-    host: process.env.DB_HOST || 'db',
+    host: process.env.DB_HOST ,
     port: parseInt(process.env.DB_PORT || '5432', 10),
-    user: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASSWORD || 'db1234',
-    database: process.env.DB_NAME || 'mydb',
+    user: process.env.DB_USER ,
+    password: process.env.DB_PASSWORD ,
+    database: process.env.DB_NAME,
   };
 
   console.log('Connection Config:', connectionConfig);

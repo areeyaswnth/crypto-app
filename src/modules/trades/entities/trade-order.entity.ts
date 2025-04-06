@@ -1,7 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Wallet } from '../../wallets/entities/wallet.entity';
-import { FiatType } from 'src/common/enum/fiat-type.enum';
 
 export enum OrderType {
   BUY = 'buy',

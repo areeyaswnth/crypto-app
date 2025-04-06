@@ -37,15 +37,5 @@ export class WalletsService {
     return wallet;
   }
 
-  
 
-  // updateWallet(wallet: Wallet): Observable<Wallet> {
-  //   const url = `${this.apiUrl}/${wallet.id}`;
-  //   return this.http.put<Wallet>(url, wallet).pipe(map(response => response.data));
-  // }
-
-  // deleteWallet(id: string): Observable<void> {
-  //   const url = `${this.apiUrl}/${id}`;
-  //   return this.http.delete<void>(url).pipe(map(response => response.data));
-  // }
 }

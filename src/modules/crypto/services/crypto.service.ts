@@ -1,9 +1,6 @@
-// src/crypto/crypto.service.ts
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CryptoRepository } from '../repositories/crypto.repository';
 import { CreateCryptoDto } from '../dtos/create-crypto.dto';
-import { UpdateCryptoDto } from '../dtos/update-crypto.dto';
-import { CryptoCurrency } from 'src/modules/wallets/dtos/transfer-crypto';
 import { WalletsRepository } from 'src/modules/wallets/repositories/wallets.repository';
 import { CryptoEntity,  } from '../entities/crypto.entity';
 import { CryptoType } from 'src/common/enum/crypto-type.enum';
