@@ -62,6 +62,37 @@ async function seed() {
                 }
             }
         );
+        //test deposit crypto
+        const depositCryptoResponse = await axios.post(
+            `${process.env.API_BASE_URL}/wallets/${wallet.wallet_id}/cryptos/BTC/deposit`,
+            {
+                "amount": 0.1,
+                "currency": "BTC"
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`, // ส่ง Bearer token ใน header
+                    'Content-Type': 'application/json'
+                }
+            })
+        console.log('Deposit crypto response:', depositCryptoResponse.data);
+        //test withdraw crypto
+        const withdrawCryptoResponse = await axios.post(
+            `${process.env.API_BASE_URL}/wallets/${wallet.wallet_id}/cryptos/BTC/withdraw`,
+            {
+                "amount": 0.2,
+                "currency": "BTC"
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`, // ส่ง Bearer token ใน header
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+        console.log('Withdraw crypto response:', withdrawCryptoResponse.data);
+
+
         const crypto = cryptoResponse.data;
         console.log('Crypto created:', crypto);
         //test get all wallets
@@ -75,7 +106,7 @@ async function seed() {
             }
         );
         console.log('Wallets:', walletsResponse.data);
-        const walletId = wallet.wallet_id; 
+        const walletId = wallet.wallet_id;
         console.log('walletId:', walletId);
         //test get wallet by walletId
         const walletByIdResponse = await axios.get(
@@ -84,7 +115,7 @@ async function seed() {
                 headers: {
                     'Authorization': `Bearer ${token}`, // ส่ง Bearer token ใน header
                     'Content-Type': 'application/json'
-                  }
+                }
             }
         );
         console.log('Wallet by ID:', walletByIdResponse.data);
@@ -99,7 +130,7 @@ async function seed() {
                 headers: {
                     'Authorization': `Bearer ${token}`, // ส่ง Bearer token ใน header
                     'Content-Type': 'application/json'
-                  }
+                }
             }
         );
         console.log('Deposit response:', depositResponse.data);
@@ -111,9 +142,10 @@ async function seed() {
                 "currency": "USD"
             },
             {
-                headers: { 'Authorization': `Bearer ${token}`, // ส่ง Bearer token ใน header
-                'Content-Type': 'application/json'
-              }
+                headers: {
+                    'Authorization': `Bearer ${token}`, // ส่ง Bearer token ใน header
+                    'Content-Type': 'application/json'
+                }
             }
         );
         console.log('Withdraw response:', withdrawResponse.data);
@@ -124,7 +156,7 @@ async function seed() {
                 headers: {
                     'Authorization': `Bearer ${token}`, // ส่ง Bearer token ใน header
                     'Content-Type': 'application/json'
-                  }
+                }
             }
         );
         console.log('Cryptos:', cryptosResponse.data);
@@ -141,12 +173,26 @@ async function seed() {
                 "price_currency": "USD"
             },
             {
-                headers: { 'Authorization': `Bearer ${token}`, // ส่ง Bearer token ใน header
-                'Content-Type': 'application/json'
-              }
+                headers: {
+                    'Authorization': `Bearer ${token}`, // ส่ง Bearer token ใน header
+                    'Content-Type': 'application/json'
+                }
             }
         );
-       
+        console.log('Trade response:', tradeResponse.data);
+        //test get all trades
+        const tradesResponse = await axios.get(
+            `${process.env.API_BASE_URL}/trades/${walletId}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`, // ส่ง Bearer token ใน header
+                    'Content-Type': 'application/json'
+                }
+
+            }
+        );
+        console.log('Trades:', tradesResponse.data);
+
         //test create transaction 
         const transactionResponse = await axios.post(
             `${process.env.API_BASE_URL}/wallets/wallet/${walletId}/transactions`,
@@ -156,23 +202,52 @@ async function seed() {
                 "amount": 0.005,
                 "external_address": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
                 "description": "create transaction test",
-                
+
             },
             {
-                headers: { 'Authorization': `Bearer ${token}`, // ส่ง Bearer token ใน header
-                'Content-Type': 'application/json'
-              }
+                headers: {
+                    'Authorization': `Bearer ${token}`, // ส่ง Bearer token ใน header
+                    'Content-Type': 'application/json'
+                }
             }
         );
         console.log('Transaction response:', transactionResponse.data);
-       
-       
+
+        //test get transaction by walletId
+        const transactionsResponse = await axios.get(
+            `${process.env.API_BASE_URL}/wallets/wallet/${walletId}/transactions`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`, // ส่ง Bearer token ใน header
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        console.log('Transactions:', transactionsResponse.data);
+
+        //test change transaction status
+        const transactionId = transactionResponse.data.transaction_id;
+        const statusResponse = await axios.put(
+            `${process.env.API_BASE_URL}/wallets/wallet/${walletId}/transactions/${transactionId}/status`,
+            {
+                "status": "completed"
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`, // ส่ง Bearer token ใน header
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+        console.log('Change transaction status response:', statusResponse.data);
 
 
 
-        console.log('✅ Seeding complete!');
+
+        console.log(' Seeding complete!');
     } catch (error) {
-        console.error('❌ Error seeding:', error);
+        console.error('Error seeding:', error);
         process.exit(1);
     }
 

@@ -5,6 +5,11 @@ import { Transaction, TransactionStatus } from '../entities/transaction.entity';
 
 @Injectable()
 export class TransactionsService {
+  getTransactionsByUserId(userId: string,walletId: string): Promise<Transaction[]> {
+    return this.transactionsRepository.find({
+      where: { user_id: userId, wallet_id: walletId },
+    });
+  }
   constructor(
     private transactionsRepository: TransactionsRepository,
   ) {}
@@ -20,13 +25,20 @@ export class TransactionsService {
     });
     return this.transactionsRepository.save(newTransaction);
   }
-
-  async updateTransactionStatus(id: string, status: TransactionStatus): Promise<Transaction> {
+  async updateTransactionStatus(id: string, status: TransactionStatus): Promise<Transaction|null> {
+  
     const transaction = await this.getTransactionById(id);
     if (!transaction) {
       throw new Error('Transaction not found');
     }
-    transaction.status = status;
-    return this.transactionsRepository.save(transaction);
+  
+    const validStatuses = Object.values(TransactionStatus);
+    if (!validStatuses.includes(status)) {
+      throw new Error(`Invalid transaction status: ${status}`);
+    }
+  
+    await this.transactionsRepository.update(id, { status }); 
+    return this.getTransactionById(id);
   }
+  
 }

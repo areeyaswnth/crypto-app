@@ -7,12 +7,14 @@ import { CryptoEntity } from './entities/crypto.entity';
 import { CryptoRepository } from './repositories/crypto.repository';
 import { WalletsModule } from '../wallets/wallets.module';
 import { AuthModule } from '../auth/auth.module';
+import { TransactionsModule } from '../transactions/transactions.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([CryptoEntity]),
     WalletsModule  ,
-    forwardRef(() => AuthModule)
+    forwardRef(() => AuthModule),
+    forwardRef(() => TransactionsModule)
   ],
   controllers: [CryptoController],
   providers: [
