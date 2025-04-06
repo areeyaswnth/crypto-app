@@ -20,6 +20,15 @@ export class CryptoController {
     const userId = req.user.user_id;
 
     createCryptoDto.wallet_id = wallet_id;
+    if (!createCryptoDto.wallet_id) {
+      throw new HttpException('Wallet ID not provided', HttpStatus.BAD_REQUEST);
+    }
+    if (!createCryptoDto.currency) {
+      throw new HttpException('Currency not provided', HttpStatus.BAD_REQUEST);
+    }
+    if (createCryptoDto.balance < 0) {
+      throw new HttpException('Balance cannot be negative', HttpStatus.BAD_REQUEST);
+    }
     try {
       const crypto = await this.cryptoService.createCrypto(createCryptoDto, userId);
       return { message: `Crypto created for ${createCryptoDto.wallet_id}`, crypto };
@@ -45,22 +54,4 @@ export class CryptoController {
 
 
 
-  @Post(':currency/deposit')
-  async deposit(
-    @Param('wallet_id') wallet_id: string,
-    @Param('currency') currency: string,
-    @Body('amount') amount: number,@Request() req
-  ) {
-    return this.cryptoService.deposit(wallet_id, currency, amount,req.user.user_id);
-  }
-
-  @Post(':currency/withdraw')
-  async withdraw(
-    @Param('wallet_id') wallet_id: string,
-    @Param('currency') currency: string,
-    @Body('amount') amount: number,
-    @Request() req
-  ) {
-    return this.cryptoService.withdraw(wallet_id, currency, amount,req.user.user_id);
-  }
 }
