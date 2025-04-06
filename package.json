@@ -19,7 +19,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "db:test": "ts-node src/database/connection-debug.ts",
-    "seed": "ts-node --transpile-only prisma/seed.ts"
+    "seed": "ts-node -r tsconfig-paths/register prisma/seeds/seed.ts"
   },
   "dependencies": {
     "@angular/common": "^19.2.5",

@@ -38,11 +38,10 @@ export class User {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updated_at: Date;
 
-  // Relationships
   @OneToMany(() => Wallet, wallet => wallet.user)
   wallets: Wallet[];
 
-  @OneToMany(() => TradeOrder, tradeOrder => tradeOrder.user)
+  @OneToMany(() => TradeOrder, (tradeOrder) => tradeOrder.user)
   trade_orders: TradeOrder[];
 
 

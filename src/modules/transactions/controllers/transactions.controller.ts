@@ -4,19 +4,20 @@ import { CreateTransactionDto } from '../dtos/create-transaction.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { TransactionStatus } from '../entities/transaction.entity';
 
-@Controller('transactions')
+@Controller('')
 @UseGuards(JwtAuthGuard)
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
-  @Post()
+  @Post('wallets/wallet/:id/transactions')
   @UseGuards(JwtAuthGuard)
-  async createTransaction(@Body() createTransactionDto: CreateTransactionDto,@Request() req) {
+  async createTransaction(@Param('id') wallet_id:string,@Body() createTransactionDto: CreateTransactionDto,@Request() req) {
     createTransactionDto.user_id= req.user.user_id;
+    createTransactionDto.wallet_id = wallet_id;
     return this.transactionsService.createTransaction(createTransactionDto);
   }
 
-  @Post(':id/status')
+  @Post('wallets/wallet/:id/transactions/status')
   @UseGuards(JwtAuthGuard)
   async updateTransactionStatus(
     @Param('id') id: string, 
