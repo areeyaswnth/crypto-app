@@ -42,7 +42,7 @@ export class UsersRepository {
   async findById(user_id: string): Promise<User | null> {
     return this.usersRepository.findOne({ 
       where: { user_id },
-      relations: ['wallets', 'trade_orders']
+      relations: ['wallets',]
     });
   }
 }

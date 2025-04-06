@@ -59,11 +59,11 @@ export class TradeOrder {
   executed_at?: Date;
 
   // Relationships
-  @ManyToOne(() => User, user => user.trade_orders)
-  @JoinColumn({ name: 'user_id' })
-  user: User;
+  //@ManyToOne(() => User, user => user.trade_orders)
+ // @JoinColumn({ name: 'user_id' })
+ // user: User;
 
-  @ManyToOne(() => Wallet, wallet => wallet.trade_orders)
-  @JoinColumn({ name: 'wallet_id' })
-  wallet: Wallet;
+ // @ManyToOne(() => Wallet, wallet => wallet.trade_orders)
+ // @JoinColumn({ name: 'wallet_id' })
+  //wallet: Wallet;
 }

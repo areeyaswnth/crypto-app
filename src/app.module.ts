@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { WalletsModule } from './modules/wallets/wallets.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { CryptoModule } from './modules/crypto/crypto.module';
 //import { WalletsModule } from './modules/wallets/wallets.module';
 //import { TransactionsModule } from './modules/transactions/transactions.module';
 //import { TradesModule } from './modules/trades/trades.module';
@@ -40,6 +41,7 @@ import { AuthModule } from './modules/auth/auth.module';
     UsersModule,
      AuthModule,
     WalletsModule,
+    CryptoModule,
     // TransactionsModule,
     // TradesModule,
     // ExchangesModule
