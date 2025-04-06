@@ -3,7 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDa
 import { Wallet } from 'src/modules/wallets/entities/wallet.entity';
 import { FiatType } from 'src/common/enum/fiat-type.enum';
 
-@Entity('fias')
+@Entity('fiats')
 export class FiatEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

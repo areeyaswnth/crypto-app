@@ -6,7 +6,11 @@ import { Wallet } from '../entities/wallet.entity';
 
 @Injectable()
 export class WalletsService {
-    findById(wallet_id: string, user_id: string) {
+   
+    async deductBalance(wallet_id: string, total_value: number) {
+        return this.walletsRepository.deductBalance(wallet_id, total_value);
+    }
+    async findById(wallet_id: string, user_id: string) {
         return this.walletsRepository.findById(wallet_id, user_id);
     }
     constructor(

@@ -1,70 +1,88 @@
 // src/trades/services/trade-orders.service.ts
-import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException, Logger } from '@nestjs/common';
 import { TradeOrdersRepository } from '../repositories/trade-orders.repository';
 import { CreateTradeOrderDto } from '../dtos/create-trade-order.dto';
 import { TradeOrder, OrderStatus, OrderType } from '../entities/trade-order.entity';
 import { WalletsService } from 'src/modules/wallets/services/wallets.service';
 import { CryptoPricingService } from './crypto-pricing.service';
+import { CryptoService } from 'src/modules/crypto/services/crypto.service';
 
 @Injectable()
 export class TradeOrdersService {
   getTradeOrderById(userId: string, orderId: string) {
-    return this.tradeOrdersRepository.findOne({ 
-      where: { id: orderId, user_id: userId } 
-    });
+      return this.tradeOrdersRepository.findOne({
+        where: { id: orderId, user_id: userId },
+        relations: ['wallet'],
+        });
   }
   getTradeOrders(userId: string) {
-    return this.tradeOrdersRepository.find({ where: { user_id: userId } });
+      return this.tradeOrdersRepository.findByUser(userId);
   }
+  private readonly logger = new Logger(TradeOrdersService.name);
+
   constructor(
     private tradeOrdersRepository: TradeOrdersRepository,
     private walletsService: WalletsService,
-    private cryptoPricingService: CryptoPricingService
-  ) {}async createTradeOrder(
+    private cryptoPricingService: CryptoPricingService,
+    private cryptoService: CryptoService
+  ) {}
+
+  async createTradeOrder(
     createTradeOrderDto: CreateTradeOrderDto, 
     user_id: string
   ): Promise<TradeOrder> {
-    // ตรวจสอบ user_id
     if (!user_id) {
       throw new UnauthorizedException('User not authenticated');
     }
-  
-    // ตรวจสอบกระเป๋าเงิน
-    const wallet = await this.walletsService.findById(
-      createTradeOrderDto.wallet_id, 
-      user_id
-    );
-  
-    // ดึงราคาปัจจุบัน
+
     const currentPrice = await this.cryptoPricingService.getCurrentPrice(
-      createTradeOrderDto.crypto_type
+      createTradeOrderDto.crypto_type  
     );
-  
-    // คำนวณมูลค่ารวม
+
     const total_value = createTradeOrderDto.amount * currentPrice;
-  
-    // สร้าง Trade Order
+
     const tradeOrder = this.tradeOrdersRepository.create({
       ...createTradeOrderDto,
       user_id,
       status: OrderStatus.PENDING,
-      total_value,  // เพิ่ม total_value
-      price: currentPrice  // เพิ่ม current price
-    });
-  
-    return this.tradeOrdersRepository.save(tradeOrder);
-  }
-
-  async cancelTradeOrder(order_id: string, user_id: string): Promise<TradeOrder> {
-    const order = await this.tradeOrdersRepository.findOne({ 
-      where: { id: order_id, user_id } 
+      total_value,
+      price: currentPrice
     });
 
-    if (!order) {
-      throw new BadRequestException('Order not found');
+    const savedOrder = await this.tradeOrdersRepository.save(tradeOrder);
+    
+    if (createTradeOrderDto.order_type === OrderType.BUY) {
+      await this.processBuyOrder(savedOrder);
+    } else {
+      await this.processSellOrder(savedOrder);
     }
 
-    order.status = OrderStatus.CANCELLED;
-    return this.tradeOrdersRepository.save(order);
+    return savedOrder;
+  }
+
+  private async processBuyOrder(order: TradeOrder): Promise<void> {
+    try {
+      order.status = OrderStatus.EXECUTED;
+      await this.tradeOrdersRepository.save(order);
+    } catch (error) {
+      order.status = OrderStatus.FAILED;
+      await this.tradeOrdersRepository.save(order);
+      
+      this.logger.error('Buy order processing failed', error);
+      throw new BadRequestException('Failed to process buy order');
+    }
+  }
+  
+  private async processSellOrder(order: TradeOrder): Promise<void> {
+    try {
+      order.status = OrderStatus.EXECUTED;
+      await this.tradeOrdersRepository.save(order);  
+    } catch (error) {
+      order.status = OrderStatus.FAILED;
+      await this.tradeOrdersRepository.save(order);
+      
+      this.logger.error('Sell order processing failed', error);
+      throw new BadRequestException('Failed to process sell order');
+    }
   }
 }

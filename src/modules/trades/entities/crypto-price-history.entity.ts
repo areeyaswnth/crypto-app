@@ -1,8 +1,6 @@
 import { CryptoType } from 'src/common/enum/crypto-type.enum';
 import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
 
-
-
 @Entity('crypto_price_history')
 @Index(['crypto_type', 'date'], { unique: true })
 export class CryptoPriceHistory {
