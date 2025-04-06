@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Wallet } from '../../wallets/entities/wallet.entity';
+import { TradeOrder } from 'src/modules/trades/entities/trade-order.entity';
 //import { TradeOrder } from '../../trades/entities/trade-order.entity';
 
 @Entity('users')
@@ -41,8 +42,8 @@ export class User {
   @OneToMany(() => Wallet, wallet => wallet.user)
   wallets: Wallet[];
 
- // @OneToMany(() => TradeOrder, tradeOrder => tradeOrder.user)
-  //trade_orders: TradeOrder[];
+  @OneToMany(() => TradeOrder, tradeOrder => tradeOrder.user)
+  trade_orders: TradeOrder[];
 
 
 }

@@ -6,6 +6,9 @@ import { Wallet } from '../entities/wallet.entity';
 
 @Injectable()
 export class WalletsService {
+    findById(wallet_id: string, user_id: string) {
+        return this.walletsRepository.findById(wallet_id, user_id);
+    }
     constructor(
       private readonly walletsRepository: WalletsRepository,
     ) {}

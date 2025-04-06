@@ -41,7 +41,7 @@ export class TradeOrder {
   wallet_id: string;
 
   @Column({ type: 'varchar', length: 10 })
-  crypto_type: string; // BTC, ETH, XRP, DOGE
+  crypto_type: string; 
 
   @Column('decimal', { precision: 20, scale: 8 })
   amount: number;
@@ -58,12 +58,12 @@ export class TradeOrder {
   @Column({ type: 'timestamp', nullable: true })
   executed_at?: Date;
 
-  // Relationships
-  //@ManyToOne(() => User, user => user.trade_orders)
- // @JoinColumn({ name: 'user_id' })
- // user: User;
+  Relationships
+  @ManyToOne(() => User, user => user.trade_orders)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
- // @ManyToOne(() => Wallet, wallet => wallet.trade_orders)
- // @JoinColumn({ name: 'wallet_id' })
-  //wallet: Wallet;
+  @ManyToOne(() => Wallet, wallet => wallet.trade_orders)
+  @JoinColumn({ name: 'wallet_id' })
+  wallet: Wallet;
 }

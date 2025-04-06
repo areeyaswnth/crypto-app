@@ -1,11 +1,7 @@
+import { CryptoType } from 'src/common/enum/crypto-type.enum';
 import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
 
-export enum CryptoType {
-  BITCOIN = 'BTC',
-  ETHEREUM = 'ETH',
-  RIPPLE = 'XRP',
-  DOGECOIN = 'DOGE'
-}
+
 
 @Entity('crypto_price_history')
 @Index(['crypto_type', 'date'], { unique: true })

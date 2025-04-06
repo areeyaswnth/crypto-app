@@ -8,6 +8,7 @@ import { WalletsModule } from './modules/wallets/wallets.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CryptoModule } from './modules/crypto/crypto.module';
 import { FiatModule } from './modules/fiat/fiat.module';
+import { TradesModule } from './modules/trades/trades.module';
 //import { WalletsModule } from './modules/wallets/wallets.module';
 //import { TransactionsModule } from './modules/transactions/transactions.module';
 //import { TradesModule } from './modules/trades/trades.module';
@@ -43,7 +44,9 @@ import { FiatModule } from './modules/fiat/fiat.module';
      AuthModule,
     WalletsModule,
     CryptoModule,
-    FiatModule
+    FiatModule,
+    CryptoModule,
+    TradesModule
     // TransactionsModule,
     // TradesModule,
     // ExchangesModule
